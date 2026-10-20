@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+interface Props { dark?: boolean }
+const { dark = false } = Astro.props;
+const steps = [
+  ['plant', 'Het veld', 'Biologisch katoen, geteeld zonder synthetische pesticiden of kunstmest en met respect voor bodem en boer.'],
+  ['spool', 'De spinnerij', 'Lange vezels worden tot een strak, stevig garen gesponnen. Dat is de basis van een stof die niet pluist.'],
+  ['knit', 'Het breiatelier', 'Een dichte, zware brei geeft het stevige gevoel dat je meteen opmerkt. In Europa, met korte lijnen.'],
+  ['needle', 'Het naaiatelier', 'Dubbel gestikte, platte naden en een brede tailleband. Elk stuk wordt nagekeken voor het vertrekt.'],
+] as const;
+---
+<ol class:list={['grid border-t sm:grid-cols-2 lg:grid-cols-4', dark ? 'border-[#34322d]' : 'border-line']}>
+  {steps.map(([icon, title, text], i) => (
+    <li class:list={['reveal flex flex-col border-b pb-10 pt-8 sm:pr-8 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:[&:not(:first-child)]:pl-8', `reveal-d${i}`, dark ? 'border-[#34322d]' : 'border-line']}>
+      <div class="mb-14 flex items-center justify-between">
+        <span class:list={['font-display text-5xl italic', dark ? 'text-taupe' : 'text-moss']}>0{i + 1}</span>
+        <Icon name={icon} class:list={['size-8', dark ? 'text-taupe' : 'text-moss']} />
+      </div>
+      <h3 class="mb-3 font-display text-3xl">{title}</h3>
+      <p class:list={['text-[14px] leading-relaxed', dark ? 'text-[#a7a093]' : 'text-muted']}>{text}</p>
+    </li>
+  ))}
+</ol>

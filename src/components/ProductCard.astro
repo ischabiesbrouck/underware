@@ -1,0 +1,31 @@
+---
+import { colors, img, type Product } from '../data/products';
+interface Props { product: Product; delay?: number }
+const { product: p, delay = 0 } = Astro.props;
+const c = p.colors[0];
+const alt = !p.multipack && p.colors[1];
+---
+<a class:list={['card reveal group block', delay && `reveal-d${delay}`]} href={`product-${p.slug}.html`} data-category={p.category}>
+  <div class="studio relative mb-5 aspect-[4/5] overflow-hidden">
+    {p.badge && <span class="label absolute left-4 top-4 z-10 text-[10px] text-ink/70">{p.badge}</span>}
+    <img src={img(p.slug, c)} alt={`${p.name} in ${colors[c].name.toLowerCase()}`} loading="lazy"
+      class="absolute inset-0 size-full object-contain p-[12%] transition-all duration-[1200ms] ease-(--ease-lux) group-hover:scale-[1.04]" />
+    {alt && (
+      <img src={img(p.slug, alt)} alt="" loading="lazy"
+        class="studio absolute inset-0 size-full object-contain p-[12%] opacity-0 transition-opacity duration-700 ease-(--ease-lux) group-hover:opacity-100" />
+    )}
+    <span class="label absolute inset-x-4 bottom-4 flex translate-y-3 items-center justify-between bg-bone/90 px-4 py-3 text-[10px] opacity-0 backdrop-blur transition-all duration-500 ease-(--ease-lux) group-hover:translate-y-0 group-hover:opacity-100">
+      Bekijk <span aria-hidden="true">→</span>
+    </span>
+  </div>
+  <div class="flex items-baseline justify-between gap-4">
+    <h3 class="font-display text-[1.65rem] leading-none">{p.name}</h3>
+    <span class="text-sm tabular-nums">€ {p.price}</span>
+  </div>
+  <div class="mt-2 flex items-center justify-between gap-4">
+    <span class="text-[13px] text-muted">{p.short}</span>
+    <span class="flex gap-1.5">
+      {p.colors.map((k) => <span class="size-2.5 rounded-full ring-1 ring-black/10" style={`background:${colors[k].fill}`} title={colors[k].name}></span>)}
+    </span>
+  </div>
+</a>

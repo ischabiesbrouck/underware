@@ -1,0 +1,196 @@
+---
+// Eén sjabloon voor alle productpagina's (product-de-boxer.html, ...).
+import type { GetStaticPaths } from 'astro';
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import SectionHead from '../components/SectionHead.astro';
+import BuyButton from '../components/BuyButton.astro';
+import Icon from '../components/Icon.astro';
+import SizeFinder from '../components/SizeFinder.astro';
+import Promises from '../components/Promises.astro';
+import Share from '../components/Share.astro';
+import { products, colors, sizes, img, priceNumber, type Product } from '../data/products';
+import { site, abs } from '../data/site';
+
+export const getStaticPaths = (() => products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }))) satisfies GetStaticPaths;
+
+const { product: p } = Astro.props as { product: Product };
+const c0 = p.colors[0];
+const related = products.filter((o) => o.slug !== p.slug).slice(0, 3);
+const facts = [
+  ['Materiaal', '100% biologisch katoen (GOTS)'],
+  ['Herkomst', 'Gemaakt in Europa'],
+  ['Kleuren', p.colors.map((k) => colors[k].name).join(', ')],
+  ['Pasvorm', 'Valt normaal'],
+];
+const details = [
+  ['detail-band', 'Brede tailleband', 'Zacht geribd, met een geweven label. Blijft op zijn plaats zonder in te snijden.'],
+  ['detail-naad', 'Platte, dubbele naden', 'Geen schuren, geen rafelen. De zoom rolt niet op, ook niet na veel wasbeurten.'],
+  ['detail-brei', 'Dichte brei', 'Zwaarder dan je gewend bent. Daardoor steviger, en het wordt zachter in plaats van dunner.'],
+];
+const url = abs(`product-${p.slug}.html`);
+// Google: productgegevens (prijs, voorraad, verzending, retour) voor rich results in de zoekresultaten.
+const productSchema = {
+  '@context': 'https://schema.org', '@type': 'Product', '@id': `${url}#product`,
+  name: p.name, description: p.description, sku: p.sku, ...(p.gtin ? { gtin: p.gtin } : {}),
+  image: p.colors.map((k) => abs(img(p.multipack ? p.slug : p.slug, k))),
+  brand: { '@type': 'Brand', name: site.name }, material: 'Biologisch katoen',
+  color: p.colors.map((k) => colors[k].name).join(', '), audience: { '@type': 'PeopleAudience', suggestedGender: 'male' },
+  category: 'Herenondergoed',
+  offers: {
+    '@type': 'Offer', url, price: priceNumber(p.price), priceCurrency: site.currency,
+    availability: 'https://schema.org/InStock', itemCondition: 'https://schema.org/NewCondition', seller: { '@id': abs('#organisatie') },
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: Number(priceNumber(p.price)) >= site.freeShippingFrom ? '0' : priceNumber(site.shippingCost), currency: site.currency },
+      shippingDestination: [{ '@type': 'DefinedRegion', addressCountry: 'BE' }, { '@type': 'DefinedRegion', addressCountry: 'NL' }],
+      deliveryTime: { '@type': 'ShippingDeliveryTime',
+        handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+        transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' } },
+    },
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy', applicableCountry: ['BE', 'NL'], returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: site.returnDays, returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/FreeReturn',
+    },
+  },
+};
+const breadcrumb = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [['Home', abs()], ['Shop', abs('shop.html')], [p.name, url]].map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })),
+};
+const thumbImg = (k: (typeof p.colors)[number]) => (p.multipack ? img('de-boxer', k) : img(p.slug, k));
+const acc = [
+  ['Waarom extra stevig', 'Een dichte, zware brei van lange vezels, dubbel gestikte naden en een brede tailleband. Zo blijft de vorm behouden en wordt de stof zachter in plaats van dunner.'],
+  ['Maat kiezen', ''],
+  ['Verzorging', 'Wassen op 40 °C met gelijke kleuren. Niet bleken. Bij voorkeur aan de lijn laten drogen; zo gaat je ondergoed nog langer mee.'],
+  ['Verzending & retour', 'Gratis verzending in België en Nederland vanaf € 60. Ongedragen en in originele verpakking retour binnen 30 dagen.'],
+];
+---
+<Base title={`${p.seoTitle} | underware`} description={p.seoDescription} current="shop.html" path={`product-${p.slug}.html`} type="product" schema={[productSchema, breadcrumb]}>
+  <div class="wrap">
+    <nav class="label py-6 text-[10px] text-muted" aria-label="Kruimelpad"><a class="hover:text-ink" href="index.html">Home</a><span class="mx-3">/</span><a class="hover:text-ink" href="shop.html">Shop</a><span class="mx-3">/</span><span class="text-ink">{p.name}</span></nav>
+
+    <section id="kopen" class="grid scroll-mt-32 gap-10 pb-24 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-20">
+      <div class="grid content-start gap-3 sm:grid-cols-[72px_1fr] sm:gap-4">
+        <div class="order-2 grid grid-cols-4 gap-3 sm:order-1 sm:grid-cols-1 sm:content-start">
+          {p.colors.map((k) => p.multipack ? (
+            <div class="studio aspect-[4/5]"><img src={thumbImg(k)} alt={`De Boxer in ${colors[k].name.toLowerCase()}`} class="size-full object-contain p-2" /></div>
+          ) : (
+            <button type="button" data-src={img(p.slug, k)} data-color={colors[k].name} data-active={k === c0 ? '' : undefined}
+              aria-label={`Toon ${colors[k].name.toLowerCase()}`}
+              class="studio aspect-[4/5] cursor-pointer opacity-60 outline-offset-2 transition-opacity hover:opacity-100 data-[active]:opacity-100 data-[active]:outline data-[active]:outline-1 data-[active]:outline-ink"><img src={img(p.slug, k)} alt="" class="size-full object-contain p-2" /></button>
+          ))}
+          <div class="studio-dark aspect-[4/5] overflow-hidden"><img src="img/detail-band.svg" alt="Detail tailleband" class="size-full object-cover" /></div>
+        </div>
+        <div data-main class="studio relative order-1 aspect-[4/5] overflow-hidden sm:order-2">
+          {p.badge && <span class="label absolute left-5 top-5 z-10 text-[10px] text-ink/70">{p.badge}</span>}
+          <span class="label absolute bottom-5 right-5 z-10 text-[10px] text-ink/50">100% biologisch katoen</span>
+          <img src={img(p.slug, c0)} alt={p.name} class="absolute inset-0 size-full object-contain p-[10%] transition-opacity duration-200" />
+        </div>
+      </div>
+
+      <div class="self-start lg:sticky lg:top-[136px]">
+        <p class="label mb-5 text-muted">{p.short}</p>
+        <h1 class="display-lg mb-5">{p.name}</h1>
+        <p class="mb-8 text-lg tabular-nums">€ {p.price} <span class="ml-1 text-[13px] text-muted">incl. btw</span></p>
+        <p class="mb-10 max-w-[32em] text-[15px] leading-[1.75] text-muted">{p.description}</p>
+
+        <div class="border-t border-line pt-6">
+        {p.multipack ? (
+          <p class="text-sm text-muted"><span class="label mr-3 text-[10px] text-ink">Kleuren</span>Zwart, ecru en olijf (1 van elk)</p>
+        ) : (
+          <div class="flex items-center justify-between">
+            <p class="text-sm"><span class="label mr-3 text-[10px] text-muted">Kleur</span><span data-color-name>{colors[c0].name}</span></p>
+            <div class="flex gap-3">
+              {p.colors.map((k) => (
+                <button type="button" data-src={img(p.slug, k)} data-color={colors[k].name} data-active={k === c0 ? '' : undefined}
+                  aria-label={colors[k].name} style={`background:${colors[k].fill}`}
+                  class="size-7 cursor-pointer rounded-full ring-1 ring-black/10 outline-offset-[4px] data-[active]:outline data-[active]:outline-1 data-[active]:outline-ink"></button>
+              ))}
+            </div>
+          </div>
+        )}
+        </div>
+
+        <BuyButton product={p} />
+        <p class="-mt-2 mb-6 text-[13px] text-muted">{Number(priceNumber(p.price)) >= site.freeShippingFrom ? 'Gratis verzending in België en Nederland.' : `Gratis verzending vanaf € ${site.freeShippingFrom}, anders € ${site.shippingCost}. Betalen met Bancontact, iDEAL of kaart.`}</p>
+        {p.category === 'boxers' && (
+          <a href="product-het-basispakket.html" class="studio group mb-8 flex items-center gap-4 p-4 text-[13px]">
+            <img src="img/het-basispakket-zwart.svg" alt="" class="size-14 object-contain" />
+            <span class="grow"><strong class="block font-medium text-ink">Liever drie? Het Basispakket</strong><span class="text-muted">3 boxers voor € 75 in plaats van € 87.</span></span>
+            <span class="label text-[10px] transition-transform group-hover:translate-x-1">→</span>
+          </a>
+        )}
+
+        <ul class="mb-10 grid grid-cols-3 gap-4 border-y border-line py-5 text-center text-[12px] text-muted">
+          <li class="grid justify-items-center gap-2"><Icon name="truck" class="size-5 text-moss" />In 1 tot 3 werkdagen in huis</li>
+          <li class="grid justify-items-center gap-2"><Icon name="return" class="size-5 text-moss" /><a href="#belofte-maat" class="hover:text-ink">Eerste maatwissel gratis</a></li>
+          <li class="grid justify-items-center gap-2"><Icon name="knit" class="size-5 text-moss" /><a href="#belofte-stevig" class="hover:text-ink">1 jaar stevigheidsbelofte</a></li>
+        </ul>
+
+        <dl class="mb-8 grid grid-cols-2 gap-x-6 gap-y-5">
+          {facts.map(([k, v]) => <div><dt class="label mb-1.5 text-[10px] text-muted">{k}</dt><dd class="text-[14px]">{v}</dd></div>)}
+        </dl>
+
+        <div class="border-t border-line">
+          {acc.map(([title, body], i) => (
+            <details class="group border-b border-line" open={i === 0}>
+              <summary class="label flex cursor-pointer items-center justify-between py-5">{title}<span class="plus text-lg font-light">+</span></summary>
+              {body ? <p class="pb-6 text-[14px] leading-relaxed text-muted">{body}</p> : (
+                <>
+                <div class="pb-6"><SizeFinder compact /></div>
+                <table class="mb-6 w-full text-[14px]">
+                  <thead><tr class="border-b border-line text-left"><th class="label py-2 text-[10px] font-medium text-muted">Maat</th><th class="label py-2 text-[10px] font-medium text-muted">Taille (cm)</th></tr></thead>
+                  <tbody>{sizes.map(([s, w]) => <tr class="border-b border-line last:border-0"><td class="py-2.5">{s}</td><td class="py-2.5 tabular-nums text-muted">{w}</td></tr>)}</tbody>
+                </table>
+                <a href="maatgids.html" class="link-line mb-6">Volledige maatgids →</a>
+                </>
+              )}
+            </details>
+          ))}
+        </div>
+        <p class="mt-5 text-[13px] text-muted">Twijfel je tussen twee maten? Neem de grotere. Je eerste maatwissel is gratis.</p>
+        <div class="mt-8"><Share url={url} text={`${p.name} van underware: ${p.short.toLowerCase()} van biologisch katoen`} image={abs(img(p.slug, c0))} /></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="section-y border-t border-line bg-paper">
+    <div class="wrap">
+      <SectionHead eyebrow="De blijvende lade" title="Vier beloftes bij <em>elk stuk</em>." />
+      <Promises />
+    </div>
+  </section>
+
+  <section class="section-y bg-ink text-bone">
+    <div class="wrap">
+      <SectionHead eyebrow="In detail" title="Waar je het <em>verschil</em> voelt." dark />
+      <div class="grid gap-10 md:grid-cols-3 md:gap-5">
+        {details.map(([image, title, text], i) => (
+          <figure class:list={['reveal group', `reveal-d${i}`]}>
+            <div class="mb-6 aspect-[4/5] overflow-hidden bg-graphite"><img src={`img/${image}.svg`} alt={title} class="size-full object-cover transition-transform duration-[1400ms] ease-(--ease-lux) group-hover:scale-105" /></div>
+            <figcaption>
+              <p class="mb-2 flex items-baseline gap-4"><span class="font-display text-xl italic text-taupe">0{i + 1}</span><span class="font-display text-3xl">{title}</span></p>
+              <p class="text-[14px] leading-relaxed text-[#a7a093]">{text}</p>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y">
+    <div class="wrap">
+      <SectionHead eyebrow="Combineer met" title="Ook <em>mooi</em>." link={['shop.html', 'Hele collectie']} />
+      <div class="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {related.map((o, i) => <ProductCard product={o} delay={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mobiele koopbalk: verschijnt als je voorbij de koopknop scrolt -->
+  <div data-buy-bar class="fixed inset-x-0 bottom-0 z-40 flex translate-y-full items-center justify-between gap-4 border-t border-line bg-bone/95 px-5 py-3 backdrop-blur-md transition-transform duration-500 ease-(--ease-lux) data-[show]:translate-y-0 lg:hidden">
+    <span><span class="block font-display text-xl leading-none">{p.name}</span><span class="text-[13px] tabular-nums text-muted">€ {p.price}</span></span>
+    <a href="#kopen" class="btn px-5 py-3">Kies je maat</a>
+  </div>
+</Base>

@@ -1,0 +1,65 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Share from '../components/Share.astro';
+import { articles, type Article } from '../data/journal';
+import { products } from '../data/products';
+import { site, abs } from '../data/site';
+
+export const getStaticPaths = (() => articles.map((a) => ({ params: { slug: a.slug }, props: { a } }))) satisfies GetStaticPaths;
+const { a } = Astro.props as { a: Article };
+const path = `journal-${a.slug}.html`;
+const related = a.related.map((s) => products.find((p) => p.slug === s)!).filter(Boolean);
+const others = articles.filter((o) => o.slug !== a.slug);
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title, description: a.description, image: abs(site.ogImage),
+    datePublished: a.date, dateModified: a.date, inLanguage: 'nl', mainEntityOfPage: abs(path),
+    author: { '@type': 'Organization', name: site.name, url: abs() }, publisher: { '@id': abs('#organisatie') } },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: abs() },
+    { '@type': 'ListItem', position: 2, name: 'Journal', item: abs('journal.html') },
+    { '@type': 'ListItem', position: 3, name: a.title, item: abs(path) }] },
+];
+const dateNl = new Date(a.date).toLocaleDateString('nl-BE', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base title={`${a.seoTitle} | underware`} description={a.description} path={path} current="journal.html" type="article" schema={schema}>
+  <article>
+    <header class="pb-12 pt-10 md:pt-16">
+      <div class="wrap max-w-[920px]">
+        <nav class="label mb-14 text-[10px] text-muted" aria-label="Kruimelpad"><a href="index.html" class="hover:text-ink">Home</a><span class="mx-3">/</span><a href="journal.html" class="hover:text-ink">Journal</a></nav>
+        <p class="label mb-6 text-[10px] text-muted"><time datetime={a.date}>{dateNl}</time> · {a.minutes} min lezen</p>
+        <h1 class="display-lg mb-10">{a.title}</h1>
+        <p class="font-display text-[1.6rem] leading-snug">{a.intro}</p>
+      </div>
+    </header>
+    <div class="wrap max-w-[920px]">
+      <div class="studio mb-16 aspect-[16/8] overflow-hidden"><img src={a.image} alt="" class="size-full object-cover" /></div>
+      <div class="mx-auto max-w-[680px]">
+        {a.sections.map((s) => (
+          <section class="mb-12">
+            <h2 class="mb-5 font-display text-[2rem] leading-tight">{s.h}</h2>
+            {s.p.map((t) => <p class="mb-5 text-[16px] leading-[1.8] text-graphite [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-moss" set:html={t} />)}
+          </section>
+        ))}
+        <div class="border-t border-line pt-6"><Share url={abs(path)} text={a.title} image={abs(site.ogImage)} /></div>
+      </div>
+    </div>
+  </article>
+
+  <section class="section-y mt-16 border-t border-line bg-paper">
+    <div class="wrap">
+      <h2 class="display-md mb-12">Uit dit artikel</h2>
+      <div class="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">{related.map((p, i) => <ProductCard product={p} delay={i} />)}</div>
+    </div>
+  </section>
+
+  <section class="section-y">
+    <div class="wrap">
+      <h2 class="display-md mb-10">Verder lezen</h2>
+      <ul class="border-t border-line">
+        {others.map((o) => <li class="border-b border-line"><a href={`journal-${o.slug}.html`} class="group flex items-baseline justify-between gap-6 py-6"><span class="font-display text-2xl md:text-3xl">{o.title}</span><span class="label shrink-0 text-[10px] transition-transform group-hover:translate-x-1">Lees →</span></a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>

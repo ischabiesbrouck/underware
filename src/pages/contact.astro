@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import { faq, faqSchema } from '../data/faq';
+import { site } from '../data/site';
+
+// VUL AAN: je echte contactgegevens.
+const contact = [
+  ['E-mail', site.email, `mailto:${site.email}`],
+  ['Telefoon', '+32 (0)0 000 00 00', ''],
+  ['Klantenservice', 'Ma tot vr, 9u tot 17u', ''],
+  ['Adres', 'Straat 1, 0000 Gemeente, België', ''],
+];
+const field = 'w-full border-0 border-b border-line bg-transparent py-3 text-base text-ink outline-none transition-colors focus:border-ink';
+const lab = 'label grid gap-1 text-[10px] text-muted';
+---
+<Base title="Contact en veelgestelde vragen | underware" path="contact.html" current="contact.html" schema={[faqSchema()]}
+  description="Vragen over je bestelling, maat, verzending of retour? Neem contact op met underware of lees de veelgestelde vragen. Antwoord binnen twee werkdagen.">
+  <section class="pb-16 pt-16 md:pb-20 md:pt-28">
+    <div class="wrap grid gap-10 lg:grid-cols-[1.5fr_1fr] lg:items-end">
+      <div>
+        <p class="label mb-8 flex items-center gap-4 text-muted"><span class="h-px w-10 bg-line"></span>Contact</p>
+        <h1 class="display-xl animate-fade-up">We horen graag <em>van je.</em></h1>
+      </div>
+      <p class="body-lg max-w-[26em]">Vragen over je bestelling, je maat of onze materialen? Stuur ons een bericht; we antwoorden binnen twee werkdagen.</p>
+    </div>
+  </section>
+
+  <section class="border-t border-line pb-[clamp(5rem,11vw,10rem)] pt-16">
+    <div class="wrap grid items-start gap-16 lg:grid-cols-[1fr_1.4fr] lg:gap-28">
+      <div>
+        <dl class="grid gap-8">
+          {contact.map(([k, v, href]) => (
+            <div><dt class="label mb-2 text-[10px] text-muted">{k}</dt><dd class="font-display text-2xl">{href ? <a href={href} class="hover:text-moss">{v}</a> : v}</dd></div>
+          ))}
+        </dl>
+        <div class="studio mt-14 grid grid-cols-[96px_1fr] items-center gap-6 p-6">
+          <img src="img/detail-band.svg" alt="" class="aspect-square w-full object-cover" />
+          <p class="text-[14px] leading-relaxed text-muted">Twijfel je over je maat? Stuur ons je tailleomtrek en het model dat je wilt, dan helpen we je persoonlijk kiezen.</p>
+        </div>
+      </div>
+      <!--
+        CONTACTFORMULIER: werkt nu zonder server en toont enkel een bedankje.
+        Om berichten te ontvangen: zet action="https://formspree.io/f/JOUW-ID" method="POST" op het formulier (zie README).
+      -->
+      <form class="grid gap-8 sm:grid-cols-2" data-demo="Dank je! Dit formulier is nog niet gekoppeld; zie README om berichten te ontvangen.">
+        <label class={lab}>Naam<input class={field} type="text" name="naam" required autocomplete="name" /></label>
+        <label class={lab}>E-mail<input class={field} type="email" name="email" required autocomplete="email" /></label>
+        <label class:list={[lab, 'sm:col-span-2']}>Onderwerp
+          <select class={field} name="onderwerp">
+            {['Vraag over een bestelling', 'Maat en pasvorm', 'Retour of ruilen', 'Samenwerking of pers', 'Iets anders'].map((o) => <option>{o}</option>)}
+          </select>
+        </label>
+        <label class:list={[lab, 'sm:col-span-2']}>Bericht<textarea class={field} name="bericht" rows="5" required></textarea></label>
+        <div class="flex flex-wrap items-center gap-6 sm:col-span-2">
+          <button class="btn" type="submit">Verstuur bericht <span aria-hidden="true">→</span></button>
+          <p data-note class="text-sm text-moss" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section-y border-t border-line bg-paper" id="faq">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-28">
+      <div>
+        <p class="label mb-6 text-muted">Veelgestelde vragen</p>
+        <h2 class="display-lg">Goed om <em>te weten.</em></h2>
+      </div>
+      <div class="border-t border-ink">
+        {faq.map(([q, a]) => (
+          <details class="border-b border-line">
+            <summary class="flex cursor-pointer items-center justify-between gap-6 py-6 font-display text-2xl">{q}<span class="plus font-sans text-xl font-light">+</span></summary>
+            <p class="max-w-[38em] pb-7 text-[15px] leading-relaxed text-muted">{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

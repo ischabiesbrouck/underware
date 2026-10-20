@@ -1,0 +1,16 @@
+---
+// Deelknoppen zonder trackers: gewone links naar WhatsApp, Facebook, Pinterest en e-mail.
+interface Props { url: string; text: string; image?: string }
+const { url, text, image } = Astro.props;
+const u = encodeURIComponent(url); const t = encodeURIComponent(text);
+const links = [
+  ['WhatsApp', `https://wa.me/?text=${t}%20${u}`],
+  ['Facebook', `https://www.facebook.com/sharer/sharer.php?u=${u}`],
+  ['Pinterest', `https://pinterest.com/pin/create/button/?url=${u}&description=${t}${image ? `&media=${encodeURIComponent(image)}` : ''}`],
+  ['E-mail', `mailto:?subject=${t}&body=${u}`],
+];
+---
+<p class="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
+  <span class="label text-[10px]">Delen</span>
+  {links.map(([n, href]) => <a href={href} target="_blank" rel="noopener" class="underline-offset-4 hover:text-ink hover:underline">{n}</a>)}
+</p>

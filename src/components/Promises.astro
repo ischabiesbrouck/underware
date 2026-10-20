@@ -1,0 +1,17 @@
+---
+// "De blijvende lade": de vier beloftes van underware (tekst in src/data/promises.ts).
+import Icon from './Icon.astro';
+import { promises } from '../data/promises';
+interface Props { dark?: boolean }
+const { dark = false } = Astro.props;
+---
+<ul class:list={['grid border-t sm:grid-cols-2 lg:grid-cols-4', dark ? 'border-[#34322d]' : 'border-line']}>
+  {promises.map((p, i) => (
+    <li id={`belofte-${p.key}`} class:list={['reveal flex flex-col border-b py-8 sm:pr-8 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:[&:not(:first-child)]:pl-8', `reveal-d${i}`, dark ? 'border-[#34322d]' : 'border-line']}>
+      <Icon name={p.icon} class:list={['mb-10 size-7', dark ? 'text-taupe' : 'text-moss']} />
+      <p class:list={['label mb-3 text-[10px]', dark ? 'text-taupe' : 'text-muted']}>{p.short}</p>
+      <h3 class="mb-3 font-display text-3xl">{p.title}</h3>
+      <p class:list={['text-[14px] leading-relaxed', dark ? 'text-[#a7a093]' : 'text-muted']}>{p.text}</p>
+    </li>
+  ))}
+</ul>

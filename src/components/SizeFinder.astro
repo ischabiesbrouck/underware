@@ -1,0 +1,19 @@
+---
+// Maathulp: vul je tailleomtrek in en zie meteen je maat (script in public/js/main.js).
+import { sizes } from '../data/products';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const ranges = sizes.map(([s, r]) => { const [a, b] = r.split('–').map(Number); return [s, a, b]; });
+---
+<form data-size-finder={JSON.stringify(ranges)} class:list={['grid gap-4', !compact && 'studio p-6 md:p-8']} onsubmit="return false">
+  {!compact && <p class="label text-[10px] text-muted">Maathulp · 10 seconden</p>}
+  <label class="grid gap-2 text-[14px]">
+    <span>Je tailleomtrek in cm <span class="text-muted">(meet ter hoogte van je navel)</span></span>
+    <span class="flex items-end gap-3 border-b border-ink pb-1">
+      <input type="number" inputmode="numeric" min="60" max="140" step="1" placeholder="bv. 86" aria-describedby="maat-uitkomst"
+        class="w-full bg-transparent py-2 font-display text-3xl outline-none placeholder:text-taupe" />
+      <span class="label pb-3 text-[10px] text-muted">cm</span>
+    </span>
+  </label>
+  <p id="maat-uitkomst" data-size-result aria-live="polite" class="min-h-6 text-[14px] text-muted">Vul je taille in; je maat verschijnt hier.</p>
+</form>

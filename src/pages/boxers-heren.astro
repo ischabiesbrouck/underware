@@ -1,0 +1,23 @@
+---
+import CategoryLanding from '../components/CategoryLanding.astro';
+import { products } from '../data/products';
+const items = products.filter((p) => p.category === 'boxers' || p.category === 'sets');
+---
+<CategoryLanding path="boxers-heren.html"
+  seoTitle="Boxershorts heren van biologisch katoen | underware"
+  description="Stevige boxershorts en trunks voor heren van 100% biologisch katoen, gemaakt in Europa. Rolt niet op, houdt zijn vorm. Vanaf € 27, gratis maatwissel."
+  h1="Boxershorts heren · Biologisch katoen" display="Boxers die <em>blijven zitten.</em>"
+  intro="Boxershorts en trunks voor heren, gebreid uit zwaar biologisch katoen en volledig gemaakt in Europa. Een brede tailleband, platte naden en pijpen die niet oprollen."
+  items={items}
+  points={[
+    ['Pijpen die niet oprollen', 'Dubbel gestikte zoom en een dichte brei: de boxer blijft de hele dag op zijn plaats.'],
+    ['100% biologisch katoen', 'Geteeld zonder synthetische pesticiden of kunstmest. Zacht op je huid, eerlijk voor de boer.'],
+    ['Gemaakt in Europa', 'Gesponnen, gebreid en genaaid in Europa, met korte lijnen en strenge regels.'],
+    ['Eén jaar stevigheidsbelofte', 'Verliest je boxer binnen een jaar zijn vorm of gaat een naad los, dan vervangen we hem.'],
+  ]}
+  faq={[
+    ['Wat is het verschil tussen een boxer en een trunk?', 'De boxer heeft een iets langere pijp en geeft meer bedekking. De trunk is korter en nauwsluitend, ideaal onder een slanke broek.'],
+    ['Welke maat boxershort heb ik nodig?', 'Meet je taille ter hoogte van je navel en gebruik de maatgids. Tussen twee maten? Kies de grotere. Je eerste maatwissel is gratis.'],
+    ['Hoe was ik biologische boxers?', 'Op 40 °C met gelijke kleuren, binnenstebuiten, zonder wasverzachter. Bij voorkeur aan de lijn drogen.'],
+  ]}
+  article={['journal-boxer-trunk-of-slip.html', 'Gids: boxer, trunk of slip?']} />

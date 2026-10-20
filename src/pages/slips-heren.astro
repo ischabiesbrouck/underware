@@ -1,0 +1,23 @@
+---
+import CategoryLanding from '../components/CategoryLanding.astro';
+import { products } from '../data/products';
+const items = products.filter((p) => p.category === 'slips');
+---
+<CategoryLanding path="slips-heren.html"
+  seoTitle="Herenslips van biologisch katoen | underware"
+  description="Klassieke herenslips van 100% biologisch katoen, gemaakt in Europa. Goede steun, platte naden en een tailleband die niet insnijdt. € 24, gratis maatwissel."
+  h1="Herenslips · Biologisch katoen" display="De klassieke slip, <em>beter gemaakt.</em>"
+  intro="Een eerlijke herenslip met goede steun, platte naden en een brede tailleband die niet insnijdt. Gebreid uit zwaar biologisch katoen, volledig gemaakt in Europa."
+  items={items}
+  points={[
+    ['Goede steun', 'Een doordachte snit die steun geeft zonder te knellen, ook bij sport en warm weer.'],
+    ['Tailleband die niet insnijdt', 'Breed en zacht geribd, met een geweven label. Geen rode strepen op je huid.'],
+    ['100% biologisch katoen', 'Zonder synthetische pesticiden geteeld en volledig in Europa gemaakt.'],
+    ['Eén jaar stevigheidsbelofte', 'Verliest je slip binnen een jaar zijn vorm of gaat een naad los, dan vervangen we hem.'],
+  ]}
+  faq={[
+    ['Is een slip beter dan een boxer?', 'Niet beter, wel anders: een slip geeft meer steun en vrijheid, een boxer meer bedekking. Veel mannen wisselen af naargelang de dag.'],
+    ['Welke maat slip heb ik nodig?', 'Gebruik de maatgids met je tailleomtrek. Tussen twee maten? Kies de grotere. Je eerste maatwissel is gratis.'],
+    ['Krimpt een biologische slip in de was?', 'Licht, bij de eerste wasbeurt. Was op 40 °C en droog bij voorkeur aan de lijn.'],
+  ]}
+  article={['journal-boxer-trunk-of-slip.html', 'Gids: boxer, trunk of slip?']} />

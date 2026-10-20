@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import SizeFinder from '../components/SizeFinder.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, sizes } from '../data/products';
+import { faqSchema } from '../data/faq';
+import { abs } from '../data/site';
+
+const fits = [
+  ['De Boxer', 'Langere pijp, rolt niet op. Voor wie houdt van bedekking en rust.', 'product-de-boxer.html'],
+  ['De Trunk', 'Korte pijp, nauwsluitend. Onzichtbaar onder een slanke broek.', 'product-de-trunk.html'],
+  ['De Slip', 'Klassiek, met goede steun. Het minste stof, de meeste vrijheid.', 'product-de-slip.html'],
+];
+const qa = [
+  ['Hoe meet ik mijn taille?', 'Leg een meetlint ter hoogte van je navel rond je buik, zonder in te houden en zonder te spannen. Lees het aantal centimeter af.'],
+  ['Ik zit tussen twee maten in. Wat nu?', 'Kies de grotere maat. Biologisch katoen krimpt bij de eerste wasbeurt licht, en de brede tailleband zorgt dat alles toch goed blijft zitten.'],
+  ['Krimpt underware in de was?', 'Licht, bij de eerste wasbeurt (ongeveer één procent tot een paar procent). Was op 40 °C en laat bij voorkeur aan de lijn drogen.'],
+  ['Wat als mijn maat toch niet past?', 'Je eerste maatwissel is gratis, ook als je het stuk al hebt gepast. Stuur ons een bericht en we sturen meteen de juiste maat.'],
+] as const;
+const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: abs() }, { '@type': 'ListItem', position: 2, name: 'Maatgids', item: abs('maatgids.html') }] };
+---
+<Base title="Maatgids herenondergoed: welke maat boxer heb ik? | underware" path="maatgids.html" current="maatgids.html" schema={[faqSchema(qa), breadcrumb]}
+  description="Vind in 10 seconden je maat: vul je tailleomtrek in en zie welke maat boxer, trunk of slip je nodig hebt. Met maattabel, meettips en gratis eerste maatwissel.">
+  <section class="pb-16 pt-16 md:pb-20 md:pt-28">
+    <div class="wrap grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+      <div>
+        <h1 class="label mb-8 flex items-center gap-4 text-muted"><span class="h-px w-10 bg-line"></span>Maatgids herenondergoed</h1>
+        <p class="display-xl animate-fade-up">Jouw maat, <em>in tien seconden.</em></p>
+      </div>
+      <SizeFinder />
+    </div>
+  </section>
+
+  <section class="border-t border-line pb-[clamp(5rem,11vw,10rem)] pt-16">
+    <div class="wrap grid gap-16 lg:grid-cols-2 lg:gap-28">
+      <div>
+        <h2 class="display-md mb-8">Maattabel</h2>
+        <table class="w-full text-[15px]">
+          <caption class="sr-only">Maattabel underware: maat en tailleomtrek in centimeter</caption>
+          <thead><tr class="border-b border-ink text-left"><th scope="col" class="label py-3 text-[10px] font-medium">Maat</th><th scope="col" class="label py-3 text-[10px] font-medium">Taille (cm)</th><th scope="col" class="label py-3 text-[10px] font-medium">Broekmaat (ca.)</th></tr></thead>
+          <tbody>{sizes.map(([s, w], i) => <tr class="border-b border-line"><th scope="row" class="py-4 text-left font-display text-2xl font-normal">{s}</th><td class="py-4 tabular-nums text-muted">{w}</td><td class="py-4 tabular-nums text-muted">{['46', '48', '50–52', '54', '56'][i]}</td></tr>)}</tbody>
+        </table>
+        <p class="mt-5 text-[13px] text-muted">Broekmaat is een indicatie (Europese maten). De taille is leidend.</p>
+      </div>
+      <div>
+        <h2 class="display-md mb-8">Welk model past bij jou?</h2>
+        <ul class="border-t border-line">
+          {fits.map(([n, t, href]) => (
+            <li class="border-b border-line"><a href={href} class="group flex items-baseline justify-between gap-6 py-6">
+              <span><span class="block font-display text-3xl">{n}</span><span class="text-[14px] text-muted">{t}</span></span>
+              <span class="label text-[10px] transition-transform group-hover:translate-x-1">Bekijk →</span></a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y border-t border-line bg-paper">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-28">
+      <h2 class="display-lg">Meten <em>en passen.</em></h2>
+      <div class="border-t border-ink">
+        {qa.map(([q, a], i) => (
+          <details class="border-b border-line" open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between gap-6 py-6 font-display text-2xl">{q}<span class="plus font-sans text-xl font-light">+</span></summary>
+            <p class="max-w-[38em] pb-7 text-[15px] leading-relaxed text-muted">{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y">
+    <div class="wrap">
+      <h2 class="display-lg mb-14">Maat gevonden? <em>Kies je model.</em></h2>
+      <div class="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        {products.map((p, i) => <ProductCard product={p} delay={i % 4} />)}
+      </div>
+    </div>
+  </section>
+</Base>

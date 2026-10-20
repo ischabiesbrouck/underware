@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Journey from '../components/Journey.astro';
+import Promises from '../components/Promises.astro';
+import { products, colors, type ColorKey } from '../data/products';
+import { articles } from '../data/journal';
+
+const featured = ['de-boxer', 'de-trunk', 'de-slip', 'het-basispakket'].map((s) => products.find((p) => p.slug === s)!);
+const cats = [
+  ['boxers', 'Boxers', 'Boxer & trunk'],
+  ['slips', 'Slips', 'De klassieke slip'],
+  ['sets', 'Sets', 'Drie stuks, voordeliger'],
+] as const;
+const details = [
+  ['Dichte brei', 'Zwaarder dan je gewend bent: lange vezels, strak gebreid. Steviger, en zachter met elke wasbeurt.'],
+  ['Platte, dubbele naden', 'Geen schuren, geen rafelen. De zoom rolt niet op, ook niet na honderd wasbeurten.'],
+  ['Brede tailleband', 'Zacht geribd, met een geweven label. Blijft op zijn plaats zonder in te snijden.'],
+];
+const compare = [
+  ['Materiaal', '100% biologisch katoen', 'Vaak gemengd met polyester'],
+  ['Herkomst', 'Volledig gemaakt in Europa', 'Vaak onduidelijk'],
+  ['Stof', 'Zwaar en dicht gebreid', 'Dun en licht'],
+  ['Na vele wasbeurten', 'Houdt zijn vorm', 'Lubbert uit, rolt op'],
+  ['Kleuren', 'Tijdloos, elk jaar dezelfde', 'Wisselt per seizoen'],
+];
+// REVIEWS: VOORBEELDTEKSTEN. Vervang ze door echte reviews voordat de site live gaat.
+const reviews = [
+  ['Eindelijk een boxer die na maanden nog steeds strak zit. Je voelt meteen dat de stof zwaarder is.', 'De Boxer'],
+  ['Zacht, maar niet slap. De trunk zit de hele dag goed onder een slanke broek.', 'De Trunk'],
+  ['Het basispakket was de beste aankoop van het jaar. Mooie kleuren, mooie verpakking.', 'Het Basispakket'],
+];
+const palette: ColorKey[] = ['ecru', 'zwart', 'olijf', 'klei'];
+---
+<Base title="Biologisch herenondergoed, gemaakt in Europa | underware" overlay path=""
+  description="Stevige boxers, trunks en slips voor heren van 100% biologisch katoen, gemaakt in Europa. Gratis maatwissel, 1 jaar stevigheidsbelofte, plasticvrij verpakt." current="index.html">
+
+  <!-- HERO -->
+  <section class="studio-dark relative isolate flex min-h-[100svh] flex-col overflow-hidden text-bone">
+    <div class="wrap relative z-10 grid flex-1 items-center gap-6 pb-16 pt-32 lg:grid-cols-[1.05fr_1fr] lg:pt-24">
+      <div class="animate-fade-up">
+        <h1 class="label mb-8 flex items-center gap-4 text-taupe"><span class="h-px w-10 bg-taupe/60"></span>Biologisch herenondergoed · Gemaakt in Europa</h1>
+        <p class="display-xl">Basis,<br />maar dan <em class="text-taupe">beter.</em></p>
+        <p class="mt-8 max-w-[30em] text-[17px] leading-[1.7] text-[#bdb6aa]">Van 100% biologisch katoen, gesponnen, gebreid en genaaid in Europa. Zo stevig gemaakt dat het jaren meegaat.</p>
+        <div class="mt-11 flex flex-wrap gap-3">
+          <a href="shop.html" class="btn btn-light">Ontdek de collectie <span aria-hidden="true">→</span></a>
+          <a href="maatgids.html" class="btn btn-ghost-light">Vind je maat</a>
+        </div>
+      </div>
+      <div class="relative animate-slow-zoom">
+        <div class="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,rgba(244,241,236,.14),transparent)] blur-2xl"></div>
+        <img src="img/hero.svg" alt="Trunk, slip en boxer van underware in ecru, klei en olijf" class="relative mx-auto w-[min(620px,100%)] drop-shadow-[0_40px_60px_rgba(0,0,0,.45)]" />
+      </div>
+    </div>
+    <div class="wrap relative z-10">
+      <div class="grid grid-cols-2 gap-y-4 border-t border-bone/15 py-6 text-[#a7a093] md:grid-cols-4">
+        {['100% biologisch katoen', 'Gemaakt in Europa', 'Eerste maatwissel gratis', 'Plasticvrij verpakt'].map((t, i) => (
+          <p class="label flex items-center gap-3 text-[10px]"><span class="font-display text-base normal-case tracking-normal text-taupe italic">0{i + 1}</span>{t}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 FILOSOFIE -->
+  <section class="section-y">
+    <div class="wrap grid gap-12 lg:grid-cols-[1fr_2.2fr]">
+      <p class="reveal label flex items-start gap-4 text-muted"><span class="tabular-nums">01</span><span class="mt-[.5em] h-px w-10 bg-line"></span>Filosofie</p>
+      <div>
+        <p class="reveal display-md max-w-[22em]">Het eerste wat je aantrekt, verdient de meeste zorg. Daarom maken we weinig, maar <em class="text-moss">maken we het goed</em>: tijdloze stukken in rustige kleuren, uit de beste stof die we konden vinden.</p>
+        <a href="over-ons.html" class="reveal link-line mt-10">Lees ons verhaal <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIEËN -->
+  <section class="pb-[clamp(5rem,11vw,10rem)]">
+    <div class="wrap grid gap-4 md:grid-cols-3 md:gap-5">
+      {cats.map(([hash, title, sub], i) => (
+        <a href={hash === 'sets' ? 'product-het-basispakket.html' : `${hash}-heren.html`} class:list={['reveal group relative block aspect-[4/5] overflow-hidden', i === 1 ? 'studio-dark text-bone' : 'studio', `reveal-d${i}`]}>
+          <img src={`img/cat-${hash}.svg`} alt="" class="absolute inset-0 size-full object-contain p-[10%] transition-transform duration-[1400ms] ease-(--ease-lux) group-hover:scale-[1.05]" />
+          <div class="absolute inset-x-0 bottom-0 flex items-end justify-between p-6 md:p-8">
+            <div><p class:list={['label mb-2 text-[10px]', i === 1 ? 'text-taupe' : 'text-muted']}>{sub}</p><h3 class="font-display text-4xl md:text-5xl">{title}</h3></div>
+            <span class="label translate-x-[-6px] opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100">Shop →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- 02 COLLECTIE -->
+  <section class="section-y border-t border-line bg-paper">
+    <div class="wrap">
+      <SectionHead index="02" eyebrow="De collectie" title="Dagelijkse <em>essentials</em>." link={['shop.html', 'Bekijk alles']} />
+      <div class="grid gap-x-5 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        {featured.map((p, i) => <ProductCard product={p} delay={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 EDITORIAL: MATERIAAL -->
+  <section class="section-y">
+    <div class="wrap grid items-center gap-16 lg:grid-cols-[1.1fr_1fr] lg:gap-28">
+      <div class="reveal relative">
+        <div class="studio aspect-[4/5] overflow-hidden"><img src="img/stack.svg" alt="Een stapel gevouwen underware in vier kleuren" class="size-full object-contain p-[8%]" /></div>
+        <div class="absolute -bottom-10 right-4 w-[42%] bg-bone p-2 shadow-[0_30px_60px_-30px_rgba(21,21,19,.45)] md:-right-10">
+          <img src="img/detail-band.svg" alt="Detail van de tailleband met geweven label" class="aspect-square w-full object-cover" />
+          <p class="label px-1 pb-1 pt-3 text-[9px] text-muted">Detail · tailleband</p>
+        </div>
+      </div>
+      <div>
+        <p class="reveal label mb-6 flex items-center gap-4 text-muted"><span>03</span><span class="h-px w-10 bg-line"></span>Het materiaal</p>
+        <h2 class="reveal display-lg mb-8">Gemaakt om<br /><em>te blijven.</em></h2>
+        <p class="reveal body-lg mb-12 max-w-[30em]">We kiezen een dichte, zware brei van lange katoenvezels. Dat voelt meteen steviger, houdt beter zijn vorm en wordt zachter met elke wasbeurt, in plaats van dunner.</p>
+        <ol class="border-t border-line">
+          {details.map(([t, d], i) => (
+            <li class:list={['reveal grid grid-cols-[3rem_1fr] gap-4 border-b border-line py-6', `reveal-d${i}`]}>
+              <span class="font-display text-2xl italic text-moss">0{i + 1}</span>
+              <div><h3 class="mb-1.5 text-[15px] font-medium">{t}</h3><p class="text-[14px] leading-relaxed text-muted">{d}</p></div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 BELOFTES: het underware-concept -->
+  <section class="section-y border-t border-line bg-paper" id="beloftes">
+    <div class="wrap">
+      <SectionHead index="04" eyebrow="De blijvende lade" title="Koop één keer goed.<br /><em>Wij staan ervoor in.</em>" />
+      <Promises />
+    </div>
+  </section>
+
+  <!-- STOFBAND -->
+  <section class="relative h-[62vh] min-h-[420px] overflow-hidden" aria-label="Detail van de stof">
+    <img src="img/knit-zwart.svg" alt="" class="absolute inset-0 size-full scale-110 object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/20 to-ink/30"></div>
+    <div class="wrap relative flex h-full flex-col justify-end pb-14 text-bone">
+      <p class="reveal display-lg max-w-[13em]">Je ziet het niet. <em class="text-taupe">Je voelt het elke dag.</em></p>
+    </div>
+  </section>
+
+  <!-- 04 HERKOMST -->
+  <section class="section-y bg-ink text-bone" id="reis">
+    <div class="wrap">
+      <div class="mb-16 grid gap-10 md:mb-24 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+        <div>
+          <p class="reveal label mb-6 flex items-center gap-4 text-taupe"><span>05</span><span class="h-px w-10 bg-taupe/50"></span>Van veld tot naad</p>
+          <h2 class="reveal display-lg">Vier stappen,<br /><em class="text-taupe">één continent.</em></h2>
+        </div>
+        <p class="reveal max-w-[28em] text-[17px] leading-[1.7] text-[#a7a093]">Van het katoen tot de laatste steek blijft alles in Europa. Zo weten we precies hoe, waar en door wie je ondergoed gemaakt wordt.</p>
+      </div>
+      <Journey dark />
+    </div>
+  </section>
+
+  <!-- 05 HET VERSCHIL -->
+  <section class="section-y">
+    <div class="wrap">
+      <SectionHead index="06" eyebrow="Het verschil" title="Naast gewoon <em>basic</em>." />
+      <div class="reveal">
+        <div class="label grid grid-cols-2 gap-4 border-b border-ink pb-4 text-[10px] sm:grid-cols-[1fr_1.3fr_1.3fr]">
+          <span class="hidden sm:block"></span><span class="text-ink">underware</span><span class="text-muted">Doorsnee basisondergoed</span>
+        </div>
+        {compare.map(([label, ours, theirs]) => (
+          <div class="grid grid-cols-2 items-baseline gap-x-4 gap-y-2 border-b border-line py-6 sm:grid-cols-[1fr_1.3fr_1.3fr]">
+            <span class="label col-span-2 text-[10px] text-muted sm:col-span-1">{label}</span>
+            <span class="font-display text-2xl md:text-3xl">{ours}</span><span class="text-muted">{theirs}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 PALET -->
+  <section class="section-y border-t border-line bg-paper">
+    <div class="wrap">
+      <SectionHead index="07" eyebrow="Het palet" title="Vier kleuren.<br /><em>Meer heb je niet nodig.</em>" />
+      <div class="grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
+        {palette.map((k, i) => (
+          <div class:list={['reveal group', `reveal-d${i}`]}>
+            <div class="mb-6 aspect-[3/4] overflow-hidden"><img src={`img/knit-${k}.svg`} alt={`Stof in ${colors[k].name.toLowerCase()}`} class="size-full object-cover transition-transform duration-[1400ms] ease-(--ease-lux) group-hover:scale-110" /></div>
+            <div class="mb-2 flex items-baseline justify-between"><h3 class="font-display text-3xl">{colors[k].name}</h3><span class="label text-[10px] text-muted">0{i + 1}</span></div>
+            <p class="text-[14px] leading-relaxed text-muted">{colors[k].text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 ERVARINGEN -->
+  <section class="section-y">
+    <div class="wrap">
+      <SectionHead index="08" eyebrow="Ervaringen" title="Wat dragers <em>zeggen</em>." />
+      <div class="grid gap-12 md:grid-cols-3 md:gap-8">
+        {reviews.map(([quote, product], i) => (
+          <figure class:list={['reveal border-t border-ink pt-8', `reveal-d${i}`]}>
+            <blockquote class="font-display text-[1.75rem] leading-[1.2]">“{quote}”</blockquote>
+            <figcaption class="label mt-8 text-[10px] text-muted">Voorbeeldreview · {product}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="mt-12 text-[13px] italic text-muted">Voorbeeldteksten: vervang ze door echte reviews voordat de site live gaat.</p>
+    </div>
+  </section>
+
+  <!-- 09 JOURNAL -->
+  <section class="section-y border-t border-line bg-paper">
+    <div class="wrap">
+      <SectionHead index="09" eyebrow="Journal" title="Beter kiezen, <em>langer dragen.</em>" link={['journal.html', 'Alle gidsen']} />
+      <div class="grid gap-x-5 gap-y-12 md:grid-cols-3">
+        {articles.map((a, i) => (
+          <a href={`journal-${a.slug}.html`} class:list={['reveal group block border-t border-ink pt-6', `reveal-d${i}`]}>
+            <p class="label mb-4 text-[10px] text-muted">{a.minutes} min lezen</p>
+            <h3 class="mb-4 font-display text-[1.75rem] leading-tight">{a.title}</h3>
+            <span class="link-line">Lees de gids →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- AFSLUITER -->
+  <section class="studio-dark relative overflow-hidden text-bone">
+    <div class="wrap grid items-center gap-10 py-24 md:grid-cols-[1.3fr_1fr] md:py-32">
+      <div>
+        <p class="reveal label mb-6 text-taupe">Het Basispakket · € 75</p>
+        <h2 class="reveal display-lg mb-10">Drie boxers.<br /><em class="text-taupe">Eén keer goed.</em></h2>
+        <a href="product-het-basispakket.html" class="reveal btn btn-light">Bekijk de set <span aria-hidden="true">→</span></a>
+      </div>
+      <img src="img/het-basispakket-zwart.svg" alt="Drie gevouwen boxers in zwart, ecru en olijf" class="reveal mx-auto w-[min(440px,100%)] drop-shadow-[0_40px_50px_rgba(0,0,0,.5)]" />
+    </div>
+  </section>
+</Base>

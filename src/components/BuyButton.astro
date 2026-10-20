@@ -1,0 +1,69 @@
+---
+/**
+ * SHOPIFY BUY BUTTON
+ * Werkt automatisch zodra src/data/shopify.ts (domein + token) en het
+ * shopifyId van het product in src/data/products.ts ingevuld zijn.
+ * Tot dan toont dit vak een duidelijke plaatshouder.
+ */
+import { shopify } from '../data/shopify';
+import type { Product } from '../data/products';
+
+interface Props { product: Product }
+const { product } = Astro.props;
+const live = Boolean(shopify.domain && shopify.storefrontAccessToken && product.shopifyId);
+const nodeId = `buy-${product.slug}`;
+const cfg = { domain: shopify.domain, token: shopify.storefrontAccessToken, productId: product.shopifyId, nodeId, money: shopify.moneyFormat };
+---
+<!-- SHOPIFY BUY BUTTON · {product.name} -->
+<div class="my-6 min-h-[60px]" data-shopify-product={product.slug}>
+  {live ? (
+    <div id={nodeId}></div>
+  ) : (
+    <div class="border border-dashed border-taupe bg-paper/60 p-5 text-[13px] leading-relaxed text-muted">
+      <span class="label mb-2 block text-moss">Shopify Buy Button</span>
+      Vul je Shopify-gegevens in (zie README). Dan verschijnt hier de knop voor "{product.name}", met maat, kleur en winkelmandje uit Shopify.
+      <button class="btn mt-4 w-full cursor-not-allowed justify-center opacity-50" type="button" disabled>In winkelmandje</button>
+    </div>
+  )}
+</div>
+
+{live && (
+  <script is:inline define:vars={{ cfg }}>
+    (function () {
+      var sdk = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
+      function start() {
+        var client = ShopifyBuy.buildClient({ domain: cfg.domain, storefrontAccessToken: cfg.token });
+        ShopifyBuy.UI.onReady(client).then(function (ui) {
+          ui.createComponent('product', {
+            id: cfg.productId,
+            node: document.getElementById(cfg.nodeId),
+            moneyFormat: cfg.money,
+            options: {
+              product: {
+                contents: { img: false, title: false, price: false },
+                text: { button: 'In winkelmandje', outOfStock: 'Uitverkocht', unavailable: 'Niet beschikbaar' },
+                styles: {
+                  product: { 'text-align': 'left', 'max-width': '100%' },
+                  button: {
+                    'font-family': 'Inter Variable, sans-serif', 'font-size': '11px', 'letter-spacing': '0.24em',
+                    'text-transform': 'uppercase', 'padding-top': '17px', 'padding-bottom': '17px', width: '100%',
+                    'background-color': '#151513', 'border-radius': '0', ':hover': { 'background-color': '#313829' },
+                  },
+                },
+              },
+              cart: {
+                text: { title: 'Winkelmandje', total: 'Subtotaal', button: 'Afrekenen', empty: 'Je winkelmandje is nog leeg.', notice: 'Verzendkosten en kortingen worden berekend bij het afrekenen.' },
+                styles: { button: { 'background-color': '#151513', 'border-radius': '0', ':hover': { 'background-color': '#313829' } } },
+              },
+              toggle: { styles: { toggle: { 'background-color': '#151513', ':hover': { 'background-color': '#313829' } } } },
+            },
+          });
+        });
+      }
+      if (window.ShopifyBuy && window.ShopifyBuy.UI) return start();
+      var s = document.createElement('script');
+      s.async = true; s.src = sdk; s.onload = start;
+      document.head.appendChild(s);
+    })();
+  </script>
+)}

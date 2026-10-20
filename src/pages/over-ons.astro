@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import Journey from '../components/Journey.astro';
+import SectionHead from '../components/SectionHead.astro';
+
+const values = [
+  ['100% biologisch', 'Katoen geteeld zonder synthetische pesticiden of kunstmest, gecertificeerd volgens de Global Organic Textile Standard (GOTS).'],
+  ['Europees gemaakt', 'Gesponnen, gebreid, geverfd en genaaid bij familiebedrijven in Europa. Korte lijnen, eerlijke lonen en strenge milieuregels.'],
+  ['Extra stevig', 'Een zwaardere, dichtere brei en dubbel gestikte naden. Zo houdt je ondergoed zijn vorm, wasbeurt na wasbeurt.'],
+];
+---
+<Base title="Over ons: eerlijk herenondergoed uit Europa | underware" path="over-ons.html" current="over-ons.html"
+  description="Waarom underware bestaat: stevig herenondergoed van biologisch katoen, van veld tot naad gemaakt in Europa. Minder kopen, beter kiezen.">
+  <section class="pb-16 pt-16 md:pb-24 md:pt-28">
+    <div class="wrap">
+      <p class="label mb-8 flex items-center gap-4 text-muted"><span class="h-px w-10 bg-line"></span>Over ons</p>
+      <h1 class="display-xl animate-fade-up max-w-[9em]">Minder, maar <em>beter.</em></h1>
+      <div class="mt-14 grid gap-8 border-t border-line pt-10 md:grid-cols-[1fr_1.4fr]">
+        <p class="label text-muted">Waarom we begonnen</p>
+        <p class="body-lg max-w-[34em]">underware begon met een simpele ergernis: ondergoed dat na een paar maanden al uitgelubberd is. Wij geloven dat de basis van je garderobe ook de best gemaakte mag zijn.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="studio-dark relative h-[70vh] min-h-[460px] overflow-hidden">
+    <img src="img/hero.svg" alt="Trunk, slip en boxer van underware" class="absolute inset-0 m-auto h-[86%] w-auto max-w-[92%] object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,.45)]" />
+  </section>
+
+  <section class="section-y">
+    <div class="wrap grid items-center gap-16 lg:grid-cols-2 lg:gap-28">
+      <div>
+        <p class="reveal label mb-6 flex items-center gap-4 text-muted"><span>01</span><span class="h-px w-10 bg-line"></span>Ons idee</p>
+        <h2 class="reveal display-lg mb-8">Basic hoeft niet <em>goedkoop</em> te zijn.</h2>
+        <p class="reveal body-lg mb-5">We maken een kleine collectie tijdloze stukken in rustige, natuurlijke kleuren. Geen trends, geen seizoenen, geen overbodige details. Wel de beste stof die we konden vinden, en een afwerking die je elke dag voelt.</p>
+        <p class="reveal body-lg">Omdat we minder modellen maken, kunnen we elk model beter maken. Zo eenvoudig is het.</p>
+      </div>
+      <div class="reveal studio aspect-[4/5]"><img src="img/stack.svg" alt="Gevouwen stapel in vier kleuren" class="size-full object-contain p-[8%]" /></div>
+    </div>
+  </section>
+
+  <section class="section-y border-t border-line bg-paper" id="reis">
+    <div class="wrap">
+      <SectionHead index="02" eyebrow="Van veld tot naad" title="Zo wordt underware <em>gemaakt</em>." />
+      <Journey />
+    </div>
+  </section>
+
+  <section class="section-y bg-ink text-bone" id="materiaal">
+    <div class="wrap">
+      <SectionHead index="03" eyebrow="Materiaal & makers" title="Helemaal in <em>Europa</em>." dark />
+      <div class="grid gap-12 md:grid-cols-3 md:gap-10">
+        {values.map(([title, text], i) => (
+          <div class:list={['reveal border-t border-[#34322d] pt-8', `reveal-d${i}`]}>
+            <span class="mb-10 block font-display text-5xl italic text-taupe">0{i + 1}</span>
+            <h3 class="mb-3 font-display text-3xl">{title}</h3>
+            <p class="text-[14px] leading-relaxed text-[#a7a093]">{text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-y">
+    <!-- VUL AAN: vervang deze brief door je eigen woorden en ondertekening. -->
+    <div class="reveal wrap max-w-[980px] text-center">
+      <p class="label mb-10 text-muted">Een woord van ons</p>
+      <p class="display-md">“We wilden het ondergoed maken dat we zelf altijd zochten: stevig, eerlijk gemaakt, mooi in zijn eenvoud. Iets wat je elke ochtend zonder nadenken aantrekt, en dat jaren later <em class="text-moss">nog steeds goed zit</em>.”</p>
+      <p class="label mt-10 text-muted">Het underware-team</p>
+      <a href="shop.html" class="btn mt-14">Naar de collectie <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</Base>

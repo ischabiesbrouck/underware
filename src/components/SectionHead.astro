@@ -1,0 +1,13 @@
+---
+interface Props { index?: string; eyebrow: string; title: string; link?: [string, string]; dark?: boolean }
+const { index, eyebrow, title, link, dark = false } = Astro.props;
+---
+<div class="reveal mb-14 grid gap-6 md:mb-20 md:grid-cols-[1fr_auto] md:items-end">
+  <div>
+    <p class:list={['label mb-6 flex items-center gap-4', dark ? 'text-taupe' : 'text-muted']}>
+      {index && <span class="tabular-nums">{index}</span>}{index && <span class:list={['h-px w-10', dark ? 'bg-taupe/50' : 'bg-line']}></span>}{eyebrow}
+    </p>
+    <h2 class="display-lg max-w-[14em]" set:html={title} />
+  </div>
+  {link && <a href={link[0]} class="link-line justify-self-start md:justify-self-end">{link[1]} <span aria-hidden="true">→</span></a>}
+</div>
