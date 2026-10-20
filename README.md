@@ -77,13 +77,13 @@ De Buy Button werkt pas online of via `npm run dev`, niet altijd vanuit een dubb
 
 ## SEO en vindbaarheid in Google
 
-- **Domein:** pas `url` aan in `src/data/site.ts` (nu `https://underwareshop.netlify.app`). Canonical-links, sitemap, deelafbeelding en Google-gegevens volgen automatisch.
+- **Domein:** pas `url` aan in `src/data/site.ts` (nu `https://ischabiesbrouck.github.io/underware`). Canonical-links, sitemap, deelafbeelding en Google-gegevens volgen automatisch.
 - **Per product:** `seoTitle`, `seoDescription`, `sku` (en optioneel `gtin`/EAN) in `src/data/products.ts`.
 - **Automatisch gemaakt:** `sitemap.xml`, `robots.txt`, gestructureerde gegevens (Product, Organization, FAQ, Breadcrumb), `404.html`.
 - **Na livegang:** voeg de site toe in Google Search Console en dien `sitemap.xml` in.
 - **Beloftes en FAQ:** `src/data/promises.ts` en `src/data/faq.ts`. Dit zijn beleidskeuzes; beloof alleen wat je waarmaakt.
 - Zie ook `/mnt/project-files/underware/onderzoek/concurrentie-en-concept.md` (concurrentieanalyse en concept).
 
-## Publiceren via GitHub en Netlify
+## Publiceren via GitHub Pages
 
-Deze repository is gekoppeld aan het Netlify-project `underwareshop`. Elke push naar `main` bouwt en publiceert de site automatisch. De instellingen staan in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
+Elke push naar `main` bouwt de site en zet hem op GitHub Pages via `.github/workflows/pages.yml`. Eenmalig: Settings › Pages › Source: **GitHub Actions**. Adres: https://ischabiesbrouck.github.io/underware/
